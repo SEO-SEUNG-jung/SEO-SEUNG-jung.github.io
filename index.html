@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>홈</title>
+<meta name="theme-color" content="#1f3864">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#f4f6f9; --panel:#ffffff; --panel-2:#f8fafc; --text:#1c2434; --muted:#667085; --line:#e3e8ef; --line-2:#d0d7e2;
+  --accent:#1f3864; --accent-2:#2f5ca8; --accent-soft:#e8eef8; --pos:#1a7f37; --neg:#c62828; --warn-bg:#fff4e0; --warn-line:#f0c36d;
+  --c1:#1f3864; --c2:#4f8fd6; --c3:#e8833a; --c4:#5fa84f; --heat:47,92,168;
+  --radius:10px; --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#11151c; --panel:#191f29; --panel-2:#1f2633; --text:#e6e9ef; --muted:#97a1b3; --line:#2a3242; --line-2:#364056;
+  --accent:#9db8ff; --accent-2:#7ea2f5; --accent-soft:#232e45; --pos:#5cc779; --neg:#ff6b6b; --warn-bg:#2d2616; --warn-line:#7a6125;
+  --c1:#7ea2f5; --c2:#4fc3e8; --c3:#f0a35e; --c4:#7bcf6a; --heat:126,162,245; --shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#11151c; --panel:#191f29; --panel-2:#1f2633; --text:#e6e9ef; --muted:#97a1b3; --line:#2a3242; --line-2:#364056;
+  --accent:#9db8ff; --accent-2:#7ea2f5; --accent-soft:#232e45; --pos:#5cc779; --neg:#ff6b6b; --warn-bg:#2d2616; --warn-line:#7a6125;
+  --c1:#7ea2f5; --c2:#4fc3e8; --c3:#f0a35e; --c4:#7bcf6a; --heat:126,162,245; --shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.5 "Malgun Gothic","맑은 고딕","Apple SD Gothic Neo",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:56px}
+.brand{font-size:18px;font-weight:700;color:var(--accent);letter-spacing:-.3px}
+.spacer{flex:1}
+.layout{display:flex;align-items:flex-start}
+nav#tabs{flex:none;width:168px;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;display:flex;flex-direction:column;gap:2px;padding:14px 10px;background:var(--panel);border-right:1px solid var(--line)}
+nav#tabs button{border:0;background:none;padding:9px 12px;border-radius:8px;border-left:3px solid transparent;color:var(--muted);cursor:pointer;white-space:nowrap;font-weight:600;text-align:left}
+nav#tabs button.on{color:var(--accent);background:var(--accent-soft);border-left-color:var(--accent)}
+nav#tabs button:hover{color:var(--text);background:var(--panel-2)}
+nav#tabs button.on:hover{background:var(--accent-soft)}
+.content{flex:1;min-width:0}
+main{max-width:1320px;padding:16px 16px 60px}
+select,input{background:var(--panel);border:1px solid var(--line-2);border-radius:7px;padding:6px 8px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent-2);outline-offset:-1px;border-color:transparent}
+button{border:1px solid var(--line-2);background:var(--panel);border-radius:7px;padding:6px 12px;cursor:pointer}
+button:hover{background:var(--panel-2)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+:root[data-theme="dark"] button.primary{color:#0f1420}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) button.primary{color:#0f1420} }
+button.danger{color:var(--neg);border-color:var(--neg);background:transparent}
+button.sm{padding:2px 8px;font-size:12px}
+button.link{border:0;background:none;color:var(--accent-2);padding:2px 4px}
+.pill{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap;cursor:default}
+.pill.ok{color:var(--pos);border-color:var(--pos)}
+.pill.warn{color:#b26a00;border-color:var(--warn-line);background:var(--warn-bg);cursor:pointer}
+.pill.err{color:var(--neg);border-color:var(--neg)}
+#banner .inner{max-width:1320px;margin:12px 0 0;padding:0 16px}
+.notice{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:var(--radius);padding:12px 14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.notice p{margin:0;flex:1;min-width:240px}
+h2{font-size:15px;margin:0 0 10px;color:var(--accent)}
+h2 small{color:var(--muted);font-weight:400;margin-left:6px;font-size:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:16px;min-width:0}
+.row{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+.row>.card{margin-bottom:0}
+.stack{display:flex;flex-direction:column;gap:16px}
+.stack>.card{margin-bottom:0}
+.tel-row{grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr))}
+.tel-row>.card{padding:12px clamp(8px,1vw,16px)}
+table.grid.tel{table-layout:fixed;width:100%;font-size:clamp(11.5px,0.95vw,13.5px)}
+table.grid.tel th,table.grid.tel td{white-space:normal;word-break:keep-all;overflow-wrap:anywhere;padding:4px clamp(3px,0.45vw,8px)}
+table.grid.tel td:last-child{padding-left:2px;padding-right:0;text-align:right}
+table.grid.tel button.sm{padding:1px 6px;font-size:11.5px}
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+#txTable.mobile{min-width:0;table-layout:auto}
+#txTable.mobile tr td{white-space:normal;padding:8px 4px;cursor:pointer}
+.mtx{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.mtx-l,.mtx-r{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mtx-l{text-align:left;align-items:flex-start}
+.mtx-l b{font-size:14px;overflow:hidden;text-overflow:ellipsis}
+.mtx-l span,.mtx-r span{font-size:12px;color:var(--muted)}
+.mtx-r{text-align:right;flex:none}
+.mtx-r b{font-size:15px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow)}
+.kpi .l{color:var(--muted);font-size:12px}
+.kpi .v{font-size:clamp(17px,1.9vw,24px);font-weight:700;letter-spacing:-.5px;margin:2px 0;font-variant-numeric:tabular-nums}
+.kpi .s{color:var(--muted);font-size:12px}
+.neg{color:var(--neg)} .pos{color:var(--pos)} .muted{color:var(--muted)}
+.progress{height:10px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:6px}
+.progress>i{display:block;height:100%;background:var(--accent-2)}
+.progress>i.over{background:var(--neg)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+svg text{fill:var(--muted);font-size:11px}
+.hb{display:grid;grid-template-columns:minmax(64px,128px) minmax(40px,1fr) auto;gap:4px clamp(6px,0.8vw,10px);align-items:center;font-size:clamp(11.5px,1vw,13px)}
+.hb .bar-t{height:14px;background:var(--panel-2);border-radius:3px;overflow:hidden}
+.hb .bar-t i{display:block;height:100%;background:var(--c2);border-radius:3px}
+.hb .amt{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hb .amt small{color:var(--muted);margin-left:6px;display:inline-block;min-width:42px}
+.tablewrap{overflow:auto;max-width:100%}
+table.grid{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+table.grid th,table.grid td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;white-space:nowrap}
+table.grid thead th{background:var(--accent);color:#fff;font-weight:600;position:sticky;top:0;z-index:1;text-align:center}
+:root[data-theme="dark"] table.grid thead th{color:#0f1420}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) table.grid thead th{color:#0f1420} }
+table.grid td.num,table.grid th.num{text-align:right}
+table.grid tr.sub td{background:var(--accent-soft);font-weight:700}
+table.grid tr.tot td{background:var(--panel-2);font-weight:700;border-top:2px solid var(--line-2)}
+table.grid tr.blk td{background:var(--panel-2);color:var(--accent);font-weight:700}
+table.grid tr.hl td{background:var(--warn-bg)}
+table.grid tbody tr:hover td{background:var(--panel-2)}
+table.grid td.link{cursor:pointer}
+table.grid td.link:hover{text-decoration:underline;color:var(--accent-2)}
+table.grid td.over{color:var(--neg);font-weight:600}
+table.grid td.und{background:var(--warn-bg);box-shadow:inset 0 0 0 1px var(--warn-line)}
+.und-key{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:3px;padding:0 4px}
+table.grid td.dim{color:var(--muted)}
+table.grid td.wrap{white-space:normal;min-width:160px}
+table.grid.compact th,table.grid.compact td{padding:4px 6px;font-size:12.5px}
+table.grid.compact input.cell{width:78px!important;font-size:12.5px}
+table.grid.fit{table-layout:fixed;width:100%;min-width:840px;font-size:clamp(9.5px,0.82vw,12.5px)}
+table.grid.fit th,table.grid.fit td{font-size:inherit;padding:4px clamp(2px,0.35vw,6px)}
+table.grid.fit td:first-child{white-space:normal;word-break:keep-all}
+table.grid.fit.fixtbl{min-width:920px}
+table.grid.fit.mid{min-width:600px}
+table.grid.fit.nomin{min-width:0}
+table.grid.fit.trend{min-width:960px}
+table.grid.fit.trend input.cell{padding:2px 2px;letter-spacing:-.2px}
+table.grid.fit.mid,table.grid.fit.nomin{font-size:clamp(11.5px,1vw,13.5px)}
+table.grid.fit.wraptext td{white-space:normal;word-break:keep-all;overflow-wrap:anywhere}
+table.grid.fit.wraptext td.num{white-space:nowrap}
+table.grid.fit.wraptext tr:not(.blk) td:last-child{padding-left:2px;padding-right:0;text-align:right}
+table.grid.fit button.sm{padding:1px 6px;font-size:11px}
+table.grid.fixtbl td:nth-child(3){white-space:normal;word-break:keep-all}
+table.grid.fixtbl tr:not(.blk) td:last-child{padding-left:2px;padding-right:0;text-align:right}
+table.grid.fixtbl button.sm{padding:1px 6px;font-size:11px}
+table.grid.fit input.cell{width:100%!important;font-size:inherit;padding:2px 3px}
+.sticky-first th:first-child,.sticky-first td:first-child{position:sticky;left:0;background:var(--panel);z-index:1}
+.sticky-first thead th:first-child{background:var(--accent);z-index:2}
+input.cell{width:110px;text-align:right;padding:3px 6px;border-color:var(--line);background:var(--panel-2);color:var(--accent-2);font-weight:600}
+input.cell:hover{border-color:var(--line-2)}
+.entry{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.entry label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
+.entry label input,.entry label select{color:var(--text);font-size:14px}
+.entry label.grow{flex:1;min-width:180px}
+.entry label.chk{flex-direction:row;align-items:center;gap:5px;padding-bottom:8px}
+.entry input[name=amount]{width:130px;text-align:right;font-weight:700}
+.entry input[name=place]{width:150px}
+.entry .actions{display:flex;gap:6px}
+#txForm.entry{display:grid;grid-template-columns:minmax(118px,1.15fr) auto minmax(80px,1.25fr) minmax(110px,2fr) minmax(90px,1.1fr) minmax(100px,1.3fr) minmax(82px,.95fr) minmax(86px,1fr) auto;gap:8px;align-items:end}
+#txForm.entry label{min-width:0}
+#txTable td.num,#txTable th.num{padding-right:14px}
+#txTable td:first-child{white-space:nowrap}
+#txForm.entry label input:not([type=checkbox]),#txForm.entry label select{width:100%}
+#txForm.entry label.chk{white-space:nowrap}
+#txForm.entry.editing .actions{gap:4px}
+#txForm.entry.editing .actions button{padding:6px 9px}
+@media (max-width:1100px){
+  #txForm.entry{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #txForm.entry label.grow{grid-column:span 2}
+}
+@media (max-width:640px){
+  #txForm.entry{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+.entry.editing{outline:2px dashed var(--accent-2);outline-offset:6px;border-radius:6px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.filters input[type=search]{width:170px}
+.filters .sum{margin-left:auto;font-weight:700}
+.tx-filters{flex-wrap:nowrap;gap:6px;margin-bottom:6px}
+.tx-filters>.msel,.tx-filters>select,.tx-filters>input[type=search]{flex:1 1 0;min-width:0;width:auto}
+.tx-filters>input[type=search]{flex-grow:1.4}
+.tx-filters>.msel>.msel-btn{width:100%;min-width:0;max-width:none}
+.tx-filters>button{flex:none}
+.tx-sumline{display:flex;justify-content:flex-end;margin-bottom:8px;font-weight:700}
+@media (max-width:1000px){.tx-filters{flex-wrap:wrap}.tx-filters>.msel,.tx-filters>select,.tx-filters>input[type=search]{flex:1 1 130px}}
+.msel{position:relative}
+.msel-btn:not(.on){color:var(--muted)}
+.msel-btn{min-width:96px;max-width:170px;text-align:left;padding:6px 26px 6px 10px;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msel-btn::after{content:"";position:absolute;right:10px;top:50%;margin-top:-3px;border:4px solid transparent;border-top-color:currentColor;border-bottom:0}
+.msel-btn.on{border-color:var(--accent-2);color:var(--accent-2);font-weight:600;background:var(--accent-soft)}
+.msel-pop{position:absolute;z-index:40;top:calc(100% + 4px);left:0;background:var(--panel);border:1px solid var(--line-2);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.18);padding:8px;min-width:200px}
+.msel-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:var(--muted);padding:2px 4px 6px;border-bottom:1px solid var(--line);margin-bottom:6px;white-space:nowrap}
+.msel-list{max-height:320px;overflow:auto;display:flex;flex-direction:column}
+.msel-list.grid3{display:grid;grid-template-columns:repeat(3,minmax(64px,1fr))}
+.msel-list label{display:flex;gap:6px;align-items:center;padding:4px 6px;border-radius:6px;cursor:pointer;white-space:nowrap}
+.msel-list label:hover{background:var(--panel-2)}
+.msel-list label span{overflow:hidden;text-overflow:ellipsis}
+.msel-list label[hidden]{display:none}
+.msel-pop.wide{width:300px}
+.msel-search{width:100%;margin-bottom:6px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.toolbar .hint{color:var(--muted);font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--accent-soft);border-radius:999px;padding:3px 6px 3px 10px;font-size:13px}
+.chip button{border:0;background:none;padding:0 4px;color:var(--muted);line-height:1}
+.addline{display:flex;gap:6px}
+.months{display:grid;grid-template-columns:repeat(12,minmax(64px,1fr));gap:6px;overflow-x:auto}
+.months .mb{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--panel-2);font-size:12px}
+.months .mb b{display:block;font-size:13px;font-variant-numeric:tabular-nums}
+.months .mb.now{border-color:var(--accent-2);background:var(--accent-soft)}
+.months .mb.soon{border-color:var(--warn-line);background:var(--warn-bg)}
+.vsbar{position:relative;height:12px;background:var(--panel-2);border-radius:3px}
+.vsbar i{position:absolute;left:0;top:0;bottom:0;background:var(--c2);border-radius:3px}
+.vsbar i.over{background:var(--neg)}
+.vsbar b{position:absolute;top:-3px;bottom:-3px;width:2px;margin-left:-1px;background:var(--text)}
+.warn-t{color:#c77700}
+.subh{font-size:13px;margin:0 0 4px;color:var(--text);display:flex;justify-content:space-between;gap:8px}
+.subh span{color:var(--muted);font-weight:400}
+.list-recent{display:flex;flex-direction:column}
+.list-recent div span.neg{color:var(--neg)}
+.list-recent div{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.list-recent div span:first-child{color:var(--muted);width:78px;flex:none}
+.list-recent div span.m{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-recent div b{font-variant-numeric:tabular-nums}
+dialog{border:1px solid var(--line);border-radius:12px;padding:0;background:var(--panel);color:var(--text);width:min(560px,calc(100vw - 32px));box-shadow:0 12px 40px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(10,15,25,.45)}
+.modal h3{margin:0;padding:14px 18px;border-bottom:1px solid var(--line);font-size:16px}
+.mbody{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;max-height:65vh;overflow:auto}
+.mbody .full{grid-column:1/-1}
+.mfoot{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.field{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
+.field input,.field select{font-size:14px;color:var(--text)}
+.bulk{grid-column:1/-1}
+.bulk table{width:100%}
+.bulk input.cell{width:100px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:9px 16px;border-radius:8px;opacity:0;transition:.2s;pointer-events:none;z-index:99;max-width:calc(100vw - 32px)}
+#toast.show{opacity:1;transform:translateX(-50%)}
+.help{color:var(--muted);font-size:13px;line-height:1.7}
+.help b{color:var(--text)}
+.help ol,.help ul{padding-left:20px;margin:6px 0}
+@media (max-width:800px){
+  .layout{display:block}
+  nav#tabs{position:sticky;top:57px;z-index:15;width:auto;height:auto;flex-direction:row;overflow-x:auto;scrollbar-width:none;padding:6px 10px;border-right:0;border-bottom:1px solid var(--line)}
+  nav#tabs button{border-left:0;border-bottom:2px solid transparent;border-radius:0}
+  nav#tabs button.on{background:none;border-bottom-color:var(--accent)}
+}
+@media (max-width:640px){
+  .bar{flex-wrap:wrap}
+  .mbody{grid-template-columns:1fr}
+  .entry label,.entry label.grow{flex:1 1 140px}
+  .entry input[name=amount],.entry input[name=place]{width:100%}
+  .filters input[type=search]{width:100%}
+  .filters .sum{margin-left:0;width:100%}
+  .kpi .v{font-size:20px}
+}
+main.home{max-width:1240px;margin:0 auto;padding:16px 16px 60px}
+.hello{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:4px 2px 12px}
+.hello h1{margin:0;font-size:22px;color:var(--accent)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.tile{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);color:var(--text);text-decoration:none;font-size:16px}
+.tile:hover{border-color:var(--accent-2);background:var(--accent-soft)}
+.tile .ti{font-size:26px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.grid3>.card{margin:0;display:flex;flex-direction:column}
+.grid3>.card a.open{margin-top:auto;padding-top:10px}
+a.open{color:var(--accent-2);text-decoration:none;font-size:13px;font-weight:600}
+.pbar{height:8px;background:var(--panel-2);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:6px 0 10px}
+.pbar>i{display:block;height:100%;background:var(--accent-2);border-radius:999px}
+.pbar.done>i{background:var(--pos)}.pbar.over>i{background:var(--neg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border-radius:999px;padding:4px 10px;font-size:13px;background:var(--panel-2);border:1px solid var(--line)}
+.chip.todo{border-color:var(--accent-2);color:var(--text)}
+.chip.ok{color:var(--muted);text-decoration:line-through}
+.chip small{color:var(--muted)}
+.li{display:flex;flex-direction:column;padding:7px 10px;margin-bottom:6px;border:1px solid var(--line);border-left:4px solid var(--c2);border-radius:8px}
+.li.late{border-left-color:var(--neg)}.li.lead{border-left-color:var(--c3)}
+.li small{color:var(--muted);font-size:12px}
+.big{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.big .u{font-size:13px;color:var(--muted);font-weight:500}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv span{color:var(--muted)}.kv b{font-variant-numeric:tabular-nums;text-align:right}
+.kv.total{border-bottom:0;border-top:2px solid var(--line-2);font-size:16px}
+.kv small{color:var(--muted);font-weight:400}
+.gmini{display:grid;grid-template-columns:minmax(0,1fr) 30% 40px;gap:8px;align-items:center;padding:3px 0;font-size:13px}
+.gmini .pbar{margin:0}.gmini b{text-align:right}
+.gmini span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sub{font-size:12px;font-weight:700;color:var(--muted);margin:6px 0 2px}
+@media (max-width:1000px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.grid3{grid-template-columns:1fr}.tiles{gap:8px}.tile{flex-direction:column;gap:4px;padding:10px 6px;font-size:13px;text-align:center}.tile .ti{font-size:24px}.hello h1{font-size:19px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <div class="brand">홈</div>
+    <div class="spacer"></div>
+    <span class="pill" id="status">가계부 · 목표·루틴 · 업무관리</span>
+  </div>
+</header>
+<main id="main" class="home"></main>
+<dialog id="dlg"></dialog>
+<div id="toast" role="status"></div>
+<script>
+'use strict';
+/* ====================== 기본 상수 · 유틸 ====================== */
+const APP = 'mokpyo';
+const K_DOC = 'mokpyo.doc', K_DIRTY = 'mokpyo.dirty', K_FILE = 'mokpyo.file', K_TAB = 'mokpyo.tab', K_LPATH = 'mokpyo.ledgerPath';
+const LEDGER_DEFAULT = '/개인문서/가계부_데이터.json';
+const COLS = ['routines', 'checks', 'goals', 'tasks', 'journal', 'reviews'];
+const TABS = [['today', '오늘'], ['routine', '루틴'], ['goal', '목표'], ['review', '회고'], ['set', '설정']];
+const DEFAULT_AREAS = [{ id: 'health', name: '건강', icon: '💪' }, { id: 'work', name: '일·사업', icon: '💼' }, { id: 'money', name: '재정', icon: '💰' }, { id: 'growth', name: '자기계발', icon: '📚' }, { id: 'hobby', name: '취미', icon: '🎨' }];
+const LEVELS = [['long', '장기 목표 (3~5년)'], ['year', '올해 목표'], ['month', '이번 달 목표']];
+const STATUS = ['진행', '완료', '보류'];
+const DOW = '일월화수목금토';
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const won = n => Math.round(+n || 0).toLocaleString('ko-KR');
+const num = s => { if (typeof s === 'number') return s; const v = parseFloat(String(s ?? '').replace(/[^\d.\-]/g, '')); return isFinite(v) ? v : 0; };
+const clamp = v => Math.max(0, Math.min(1, v));
+const pctTxt = p => p == null ? '-' : Math.round(p * 100) + '%';
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+function opts(list, sel, blank) { return (blank != null ? `<option value="">${esc(blank)}</option>` : '') + list.map(o => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${esc(v)}"${String(v) === String(sel ?? '') ? ' selected' : ''}>${esc(l)}</option>`; }).join(''); }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2600); }
+function download(name, text, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+// 날짜 (모두 'YYYY-MM-DD' 문자열, 주는 월요일 시작)
+const ds = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => ds(new Date());
+const pd = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (s, n) => { const d = pd(s); d.setDate(d.getDate() + n); return ds(d); };
+const weekStart = s => { const d = pd(s); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return ds(d); };
+const dlabel = s => { const d = pd(s); return `${d.getMonth() + 1}월 ${d.getDate()}일 (${DOW[d.getDay()]})`; };
+const mlabel = s => { const d = pd(s); return `${d.getMonth() + 1}.${d.getDate()}`; };
+
+/* ====================== 데이터 문서 · 병합 (가계부와 같은 방식) ====================== */
+function emptyDoc() { const o = { app: APP, schema: 1, meta: { upd: 0, areas: DEFAULT_AREAS } }; for (const c of COLS) o[c] = []; return o; }
+function normalize(d) {
+  d = d || {}; const e = emptyDoc();
+  const o = { app: APP, schema: 1, meta: Object.assign(e.meta, d.meta || {}) };
+  for (const c of COLS) o[c] = Array.isArray(d[c]) ? d[c] : [];
+  return o;
+}
+function merge(a, b) {
+  a = normalize(a); b = normalize(b);
+  const o = { app: APP, schema: 1, meta: (b.meta.upd || 0) > (a.meta.upd || 0) ? b.meta : a.meta };
+  for (const c of COLS) {
+    const m = new Map();
+    for (const r of a[c]) m.set(r.id, r);
+    for (const r of b[c]) { const x = m.get(r.id); if (!x || (r.upd || 0) > (x.upd || 0)) m.set(r.id, r); }
+    o[c] = [...m.values()];
+  }
+  return o;
+}
+function prune() { const lim = Date.now() - 180 * 864e5; for (const c of COLS) doc[c] = doc[c].filter(r => !r.del || (r.upd || 0) > lim); }
+const live = c => doc[c].filter(r => !r.del);
+function put(col, rec) { rec.upd = Date.now(); const a = doc[col]; const i = a.findIndex(r => r.id === rec.id); if (i >= 0) a[i] = rec; else a.push(rec); if (col === 'checks') CHK.set(rec.id, rec); }
+function remove(col, id) { put(col, { id, del: 1 }); }
+function setMeta(fn) { const m = JSON.parse(JSON.stringify(doc.meta)); fn(m); m.upd = Date.now(); doc.meta = m; }
+const hasData = () => COLS.some(c => doc[c].length) || doc.meta.upd;
+
+/* ====================== 상태 ====================== */
+let doc = (() => { try { return normalize(JSON.parse(lsGet(K_DOC) || 'null')); } catch (e) { return emptyDoc(); } })();
+let fh = null, stored = null, connected = false, dirty = lsGet(K_DIRTY) === '1';
+let saving = false, saveAgain = false, saveT = null, lastSaved = null, lastErr = '', pendingRender = false;
+const fsOK = 'showOpenFilePicker' in window;
+const ui = { tab: lsGet(K_TAB) || 'today', date: today(), week: weekStart(today()), gy: new Date().getFullYear(), gm: new Date().getMonth() + 1 };
+if (!TABS.some(t => t[0] === ui.tab)) ui.tab = 'today';
+function cacheDoc() { lsSet(K_DOC, JSON.stringify(doc)); lsSet(K_DIRTY, dirty ? '1' : '0'); }
+function commit(rerender = true) {
+  dirty = true; cacheDoc(); setStatus();
+  clearTimeout(saveT); saveT = setTimeout(saveNow, 700);
+  if (rerender) setTimeout(render, 0);
+}
+let CHK = new Map();   // 체크 기록 색인: 'c-날짜-루틴id' → 기록
+function rebuildIndex() { CHK = new Map(); for (const c of doc.checks) CHK.set(c.id, c); }
+/* ====================== 저장소: PC 파일 연결 또는 Microsoft 계정(OneDrive) 로그인 ======================
+   - PC(Edge·Chrome으로 파일을 직접 열 때): File System Access로 OneDrive 폴더의 json 파일에 직접 저장
+   - 휴대폰·태블릿(또는 인터넷 주소로 열 때): Microsoft 계정으로 로그인해 Microsoft Graph로 같은 json 파일을 읽고 씀
+   두 방식 모두 같은 파일을 쓰고, 기록 단위 병합(merge)으로 동시에 고쳐도 내용이 합쳐짐 */
+const MS = {
+  clientId: 'e68213fc-a095-4937-a748-f30e52d93c63',   // Azure 앱 등록의 「애플리케이션(클라이언트) ID」 — 비밀번호가 아니라 공개돼도 되는 값
+  authority: 'https://login.microsoftonline.com/consumers',
+  scopes: ['Files.ReadWrite'],
+  lib: 'https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.28.1/lib/msal-browser.min.js',
+  sri: 'sha384-B5PXeUfgiegchZiX5iMRssMrHd9NfPhFnITob1HyW1CY76udptWpBsniaDsH/+BY'
+};
+const K_MODE = 'mokpyo.mode', K_PATH = 'mokpyo.path', DEFAULT_PATH = '/개인문서/목표관리_데이터.json';
+const msOK = () => !!MS.clientId && (location.protocol === 'https:' || location.hostname === 'localhost');
+function dataPath() { return lsGet(K_PATH) || DEFAULT_PATH; }
+function storeMode() {
+  const m = lsGet(K_MODE);
+  if (m === 'file' && fsOK) return 'file';
+  if (m === 'ms' && msOK()) return 'ms';
+  if (fsOK && location.protocol === 'file:') return 'file';
+  if (msOK()) return 'ms';
+  return fsOK ? 'file' : 'none';
+}
+let store = null, lastVer = '', lastPoll = 0;
+
+function idb() { return new Promise((res, rej) => { const r = indexedDB.open('mokpyo', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+function idbGet(k) { return Promise.race([idbGet0(k), new Promise(r => setTimeout(() => r(null), 2000))]); }
+async function idbGet0(k) { try { const db = await idb(); return await new Promise((res, rej) => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); }); } catch (e) { return null; } }
+async function idbSet(k, v) { try { const db = await idb(); await new Promise((res, rej) => { const t = db.transaction('kv', 'readwrite'); t.objectStore('kv').put(v, k); t.oncomplete = res; t.onerror = () => rej(t.error); }); } catch (e) { } }
+const PICK_TYPES = [{ description: '목표관리 데이터 (JSON)', accept: { 'application/json': ['.json'] } }];
+
+// ---- PC 파일 저장소
+function fileStore(h) {
+  return {
+    kind: 'file', name: h.name,
+    async version() { return String((await h.getFile()).lastModified); },
+    async read() { const f = await h.getFile(); return { text: await f.text(), version: String(f.lastModified), time: new Date(f.lastModified) }; },
+    async write(text) { const w = await h.createWritable(); await w.write(text); await w.close(); return String((await h.getFile()).lastModified); }
+  };
+}
+// ---- Microsoft 계정(OneDrive) 저장소
+let msal = null, msAccount = null;
+function loadScript(src, sri) {
+  return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; if (sri) { s.integrity = sri; s.crossOrigin = 'anonymous'; } s.onload = res; s.onerror = () => rej(new Error('로그인 모듈을 불러오지 못했습니다. 인터넷 연결을 확인하세요')); document.head.appendChild(s); });
+}
+async function msInit() {
+  if (msal) return msal;
+  if (!window.msal) await loadScript(MS.lib, MS.sri);
+  const app = new window.msal.PublicClientApplication({ auth: { clientId: MS.clientId, authority: MS.authority, redirectUri: location.origin + location.pathname }, cache: { cacheLocation: 'localStorage' } });
+  await app.initialize();
+  const r = await app.handleRedirectPromise();
+  msal = app; msAccount = (r && r.account) || app.getAllAccounts()[0] || null;
+  return msal;
+}
+async function msToken(interactive) {
+  await msInit();
+  if (!msAccount) { if (interactive) await msal.loginRedirect({ scopes: MS.scopes, prompt: 'select_account' }); return null; }
+  try { return (await msal.acquireTokenSilent({ scopes: MS.scopes, account: msAccount })).accessToken; }
+  catch (e) { if (interactive) { await msal.acquireTokenRedirect({ scopes: MS.scopes, account: msAccount }); return null; } const x = new Error('다시 로그인해 주세요'); x.name = 'NotAllowedError'; throw x; }
+}
+async function gfetch(path, opt = {}) {
+  const t = await msToken(false);
+  if (!t) { const x = new Error('Microsoft 계정 로그인이 필요합니다'); x.name = 'NotAllowedError'; throw x; }
+  return fetch('https://graph.microsoft.com/v1.0' + path, { ...opt, cache: 'no-store', headers: { ...(opt.headers || {}), Authorization: 'Bearer ' + t } });
+}
+const gItem = () => '/me/drive/root:' + dataPath().split('/').map(encodeURIComponent).join('/');
+function gErr(r) { const x = new Error(r.status === 404 ? `OneDrive에서 「${dataPath()}」 파일을 찾지 못했습니다` : `OneDrive 응답 오류(${r.status})`); if (r.status === 404) x.name = 'NotFoundError'; if (r.status === 401 || r.status === 403) x.name = 'NotAllowedError'; return x; }
+function msStore() {
+  return {
+    kind: 'ms', name: dataPath().split('/').pop(),
+    async version() { const r = await gfetch(gItem() + '?$select=eTag'); if (!r.ok) throw gErr(r); return (await r.json()).eTag; },
+    async read() {
+      const r = await gfetch(gItem()); if (!r.ok) throw gErr(r);
+      const j = await r.json(), c = await fetch(j['@microsoft.graph.downloadUrl'], { cache: 'no-store' });
+      if (!c.ok) throw new Error(`OneDrive 파일 내려받기 오류(${c.status})`);
+      return { text: await c.text(), version: j.eTag, time: new Date(j.lastModifiedDateTime) };
+    },
+    async write(text, ver) {
+      const r = await gfetch(gItem() + ':/content', { method: 'PUT', headers: { 'Content-Type': 'application/json', ...(ver ? { 'If-Match': ver } : {}) }, body: text });
+      if (r.status === 412) { const x = new Error('다른 기기가 먼저 저장함'); x.conflict = true; throw x; }
+      if (!r.ok) throw gErr(r);
+      return (await r.json()).eTag;
+    }
+  };
+}
+async function msLogout() { try { await msInit(); if (msAccount) await msal.logoutRedirect({ account: msAccount }); } catch (e) { toast('로그아웃 실패: ' + e.message); } }
+
+// ---- 연결 (버튼)
+async function connect() {
+  try {
+    if (storeMode() === 'ms') {
+      const t = await msToken(true); if (!t) return;          // 로그인 화면으로 넘어감 → 돌아오면 init에서 이어서 연결
+      store = msStore(); await openStore(); return;
+    }
+    if (!fsOK) { toast('이 브라우저에서는 파일에 직접 저장할 수 없습니다'); return; }
+    if (stored) {
+      const p = await stored.requestPermission({ mode: 'readwrite' });
+      if (p === 'granted') { fh = stored; store = fileStore(fh); await openStore(); return; }
+    }
+    const [h] = await window.showOpenFilePicker({ types: PICK_TYPES, multiple: false });
+    fh = stored = h; idbSet('file', h); store = fileStore(h); await openStore();
+  } catch (e) { if (e.name !== 'AbortError') { lastErr = e.message; toast('연결 실패: ' + e.message); setStatus(); renderBanner(); } }
+}
+async function createFile() {
+  try {
+    const h = await window.showSaveFilePicker({ suggestedName: '목표관리_데이터.json', types: PICK_TYPES });
+    fh = stored = h; idbSet('file', h); store = fileStore(h); lsSet(K_MODE, 'file');
+    connected = true; lsSet(K_FILE, h.name); dirty = true;
+    lastVer = await store.write(JSON.stringify(doc)); dirty = false; cacheDoc(); lastSaved = new Date();
+    renderBanner(); setStatus(); render(); toast('새 데이터 파일을 만들었습니다');
+  } catch (e) { if (e.name !== 'AbortError') toast('만들기 실패: ' + e.message); }
+}
+function parseRemote(txt) {
+  if (!txt.trim()) return emptyDoc();
+  let r; try { r = JSON.parse(txt); } catch (e) { throw new Error('데이터 파일 형식이 올바르지 않습니다(JSON 오류)'); }
+  if (r.app !== APP) throw new Error('목표관리 데이터 파일이 아닙니다');
+  return normalize(r);
+}
+async function openStore() {
+  const got = await store.read();
+  const remote = parseRemote(got.text);
+  const sameFile = lsGet(K_FILE) === store.name;
+  let next = remote;
+  if (sameFile) next = merge(remote, doc);
+  else if (dirty && hasData() && confirm('이 기기에만 임시 저장된 내용이 있습니다.\n연결한 데이터 파일에 합칠까요? (취소하면 파일 내용만 사용합니다)')) next = merge(remote, doc);
+  doc = next; lastVer = got.version; connected = true; lastErr = ''; lastPoll = Date.now();
+  lsSet(K_FILE, store.name);
+
+  const needSave = JSON.stringify(doc) !== JSON.stringify(remote);
+  dirty = needSave; cacheDoc();
+  renderBanner(); render(); setStatus();
+  if (needSave) await saveNow(); else lastSaved = got.time;
+  setStatus();
+}
+async function pullMerge(got) {   // 저장소의 최신 내용을 읽어 지금 내용과 합침
+  const before = JSON.stringify(doc);
+  doc = merge(parseRemote(got.text), doc); lastVer = got.version; cacheDoc();
+  return JSON.stringify(doc) !== before;
+}
+async function saveNow() {
+  clearTimeout(saveT);
+  if (!store || !connected) { setStatus(); return; }
+  if (saving) { saveAgain = true; return; }
+  saving = true; setStatus();
+  try {
+    for (let i = 0; ; i++) {
+      // PC 파일은 쓰기 전에 바뀌었는지 확인, OneDrive는 If-Match로 충돌을 알려 줌
+      if (store.kind === 'file' && await store.version() !== lastVer) { if (await pullMerge(await store.read())) safeRender(); }
+      prune();
+      try { lastVer = await store.write(JSON.stringify(doc), lastVer); break; }
+      catch (e) { if (!e.conflict || i >= 3) throw e; if (await pullMerge(await store.read())) safeRender(); }
+    }
+    dirty = false; lastSaved = new Date(); lastErr = ''; cacheDoc();
+  } catch (e) {
+    console.error(e); lastErr = e.message || String(e);
+    if (e.name === 'NotAllowedError' || e.name === 'NotFoundError') { connected = false; renderBanner(); }
+  } finally {
+    saving = false; setStatus();
+    if (saveAgain) { saveAgain = false; saveNow(); }
+  }
+}
+async function poll(force) {
+  if (!store || !connected || saving || document.hidden) return;
+  if (!force && store.kind === 'ms' && Date.now() - lastPoll < 14000) return;   // OneDrive는 15초마다
+  lastPoll = Date.now();
+  try {
+    if (await store.version() === lastVer) return;
+    if (await pullMerge(await store.read())) { safeRender(); toast('다른 기기에서 바뀐 내용을 반영했습니다'); }
+    if (dirty) saveNow();
+  } catch (e) { if (e.name === 'NotAllowedError' || e.name === 'NotFoundError') { connected = false; renderBanner(); setStatus(); } }
+}
+setInterval(poll, 5000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(true); else if (dirty && connected) saveNow(); });
+/* ====================== 가계부 연결 (읽기 전용) ====================== */
+let ledger = null, ledgerAt = 0, ledgerSrc = '', LDAYS = new Set();
+async function loadLedger(force) {
+  if (!force && ledger && Date.now() - ledgerAt < 300000) return false;
+  const before = ledgerAt ? JSON.stringify([ledgerSrc, (ledger.tx || []).length, ledger.meta && ledger.meta.upd]) : '';
+  let d = null, src = '';
+  try {
+    if (store && store.kind === 'ms') {
+      const p = lsGet(K_LPATH) || LEDGER_DEFAULT;
+      const r = await gfetch('/me/drive/root:' + p.split('/').map(encodeURIComponent).join('/'));
+      if (r.ok) { const j = await r.json(); const c = await fetch(j['@microsoft.graph.downloadUrl'], { cache: 'no-store' }); const x = JSON.parse(await c.text()); if (x.app === 'gagyebu') { d = x; src = 'OneDrive 가계부'; } }
+    }
+  } catch (e) { }
+  if (!d) { try { const x = JSON.parse(lsGet('gagyebu.doc') || 'null'); if (x && x.app === 'gagyebu') { d = x; src = '이 기기에서 연 가계부'; } } catch (e) { } }
+  if (!d) return false;
+  ledger = d; ledgerAt = Date.now(); ledgerSrc = src;
+  LDAYS = new Set(); for (const t of ledger.tx || []) if (!t.del && t.upd > 1e12) LDAYS.add(ds(new Date(t.upd)));
+  return JSON.stringify([ledgerSrc, (ledger.tx || []).length, ledger.meta && ledger.meta.upd]) !== before;
+}
+const METRICS = [['', '직접 입력'], ['savYear', '가계부: 올해 저축·투자 누계'], ['net', '가계부: 순자산'], ['debt', '가계부: 총부채'], ['assets', '가계부: 총자산'], ['lifeMonth', '가계부: 이번 달 생활지출(고정+변동)'], ['wFeeYear', '업무: 올해 수임액(수수료)'], ['wPaidYear', '업무: 올해 입금액(수수료)'], ['wPaidMonth', '업무: 이번 달 입금액(수수료)'], ['wCountYear', '업무: 올해 수임 건수'], ['wOpen', '업무: 미결 사건 수'], ['wLeadWin', '업무: 올해 리드 수임 성공 건수']];
+const metricValue = key => !key ? null : key[0] === 'w' ? workMetric(key) : ledgerMetric(key);
+function ledgerMetric(key) {
+  if (!ledger) return null;
+  const L = c => (ledger[c] || []).filter(r => !r.del), Y = String(new Date().getFullYear());
+  if (key === 'savYear') return L('savings').filter(s => String(s.ym || '').startsWith(Y)).reduce((a, s) => a + (+s.amount || 0), 0);
+  if (key === 'net' || key === 'debt' || key === 'assets') { let a = 0, l = 0; for (const r of L('assets')) { const v = +r.amount || 0; if (r.side === '부채') l += v; else a += v; } return key === 'net' ? a - l : key === 'debt' ? l : a; }
+  if (key === 'lifeMonth') { const ym = today().slice(0, 7), bm = new Map(((ledger.meta || {}).categories || []).map(c => [c.name, c.block])); let s = 0; for (const t of L('tx')) if (t.date && t.date.startsWith(ym) && (bm.get(t.cat) || '변동') !== '특별') s += +t.amount || 0; return s; }
+  return null;
+}
+
+/* ====================== 업무관리(번영손해사정) 연결 (읽기 전용) ======================
+   업무관리 데이터 파일은 읽기만 하고 절대 쓰지 않음. 숫자는 업무관리 대시보드와 같은 기준으로 계산 */
+const K_WPATH = 'mokpyo.workPath', WORK_DEFAULT = '/번영손해사정/번영손해사정_데이터.json';
+const WORK_URL_WEB = 'https://seo-seung-jung.github.io/beonyoung/', WORK_URL_FILE = '../번영손해사정/번영손해사정_업무관리.html';
+const WORK_DONE = '종결(수수료 입금)', LEAD_OPEN = ['사고 인지', '상담 진행', '보류'];
+let work = null, workAt = 0, workSrc = '';
+const workUrl = hash => (location.protocol === 'https:' ? WORK_URL_WEB : WORK_URL_FILE) + (hash || '');
+async function loadWork(force) {
+  if (!force && work && Date.now() - workAt < 300000) return false;
+  const sig = w => w ? JSON.stringify([(w.meta || {}).rev, (w.meta || {}).savedAtIso, (w.cases || []).length]) : '';
+  const before = sig(work) + workSrc;
+  let d = null, src = '';
+  try {
+    if (store && store.kind === 'ms') {
+      const p = lsGet(K_WPATH) || WORK_DEFAULT;
+      const r = await gfetch('/me/drive/root:' + p.split('/').map(encodeURIComponent).join('/'));
+      if (r.ok) { const j = await r.json(); const c = await fetch(j['@microsoft.graph.downloadUrl'], { cache: 'no-store' }); const x = JSON.parse(await c.text()); if (x && Array.isArray(x.cases)) { d = x; src = 'OneDrive 업무관리'; } }
+    }
+  } catch (e) { }
+  if (!d) { try { const x = JSON.parse(lsGet('byeongyoung_adjust_v1') || 'null'); if (x && Array.isArray(x.cases)) { d = x; src = '이 기기에서 연 업무관리'; } } catch (e) { } }
+  if (!d) return false;
+  work = d; workAt = Date.now(); workSrc = src;
+  return sig(work) + workSrc !== before;
+}
+const wCaseYear = c => c.acceptDate ? +c.acceptDate.slice(0, 4) : (c.year || new Date().getFullYear());
+const wBillTotal = b => (b.fee || 0) + (b.vat || 0) + (b.extra || 0);
+const wTodos = c => Array.isArray(c.todos) ? c.todos : (c.nextAction || c.dueDate) ? [{ id: 't0', text: c.nextAction || '', due: c.dueDate || '' }] : [];
+function workMetric(key) {
+  if (!work) return null;
+  const cases = work.cases || [], Y = new Date().getFullYear(), ym = today().slice(0, 7);
+  if (key === 'wCountYear') return cases.filter(c => wCaseYear(c) === Y).length;
+  if (key === 'wFeeYear') return cases.filter(c => wCaseYear(c) === Y).reduce((a, c) => a + (c.billings || []).reduce((s, b) => s + (b.fee || 0), 0), 0);
+  if (key === 'wPaidYear' || key === 'wPaidMonth') { let s = 0; for (const c of cases) for (const b of c.billings || []) if (b.paidDate && wBillTotal(b) && (key === 'wPaidYear' ? +b.paidDate.slice(0, 4) === Y : b.paidDate.startsWith(ym))) s += b.fee || 0; return s; }
+  if (key === 'wOpen') return cases.filter(c => c.stage !== WORK_DONE).length;
+  if (key === 'wLeadWin') return (work.leads || []).filter(l => l.stage === '수임 성공' && String(l.contactDate || '').startsWith(String(Y))).length;
+  return null;
+}
+// 이날 할 업무: 미결 사건의 할 일 중 기한 지남(오늘 볼 때만)·이날 마감·이날이 기간 안 + 연락일이 된 영업 리드
+function workItemsOn(d) {
+  if (!work) return { late: [], on: [], leads: [] };
+  const isT = d === today(), late = [], on = [];
+  for (const c of work.cases || []) {
+    if (c.stage === WORK_DONE) continue;
+    for (const t of wTodos(c)) {
+      if (!t.due && !t.start) continue;
+      if (t.due && t.due < d) { if (isT) late.push({ c, t }); }
+      else if (t.due === d || (t.start && t.start <= d && (!t.due || t.due >= d))) on.push({ c, t });
+    }
+  }
+  const byDue = (a, b) => String(a.t.due || '').localeCompare(String(b.t.due || ''));
+  const leads = (work.leads || []).filter(l => LEAD_OPEN.includes(l.stage) && l.nextDate && (isT ? l.nextDate <= d : l.nextDate === d)).sort((a, b) => a.nextDate.localeCompare(b.nextDate));
+  return { late: late.sort(byDue), on: on.sort(byDue), leads };
+}
+
+/* ====================== 루틴 계산 ====================== */
+const areas = () => (doc.meta.areas && doc.meta.areas.length) ? doc.meta.areas : DEFAULT_AREAS;
+const areaOf = id => areas().find(a => a.id === id) || { id: id || '', name: '기타', icon: '📌' };
+const routinesSorted = () => live('routines').sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+const isWeekly = r => (r.freq || {}).type === 'weekly';
+function activeOn(r, d) { return r.active !== false && (!r.start || d >= r.start) && (!r.end || d <= r.end); }
+function scheduled(r, d) { if (!activeOn(r, d)) return false; const f = r.freq || { type: 'daily' }; return f.type === 'days' ? (f.days || []).includes(pd(d).getDay()) : true; }
+function chkRec(r, d) { const c = CHK.get(`c-${d}-${r.id}`); return c && !c.del ? c : null; }
+function isDone(r, d) { const c = chkRec(r, d); if (c) return !!c.done; return r.auto === 'ledger' && LDAYS.has(d); }
+function isAuto(r, d) { return !chkRec(r, d) && r.auto === 'ledger' && LDAYS.has(d); }
+function weekDone(r, ws) { let n = 0; for (let i = 0; i < 7; i++) { const d = addDays(ws, i); if (d > today()) break; if (isDone(r, d)) n++; } return n; }
+function freqText(r) { const f = r.freq || { type: 'daily' }; return f.type === 'days' ? (f.days || []).slice().sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7)).map(i => DOW[i]).join('·') : f.type === 'weekly' ? `주 ${f.n || 1}회` : '매일'; }
+function streak(r) {
+  const t = today();
+  if (isWeekly(r)) {
+    const n = (r.freq && r.freq.n) || 1; let ws = weekStart(t), s = 0;
+    if (weekDone(r, ws) >= n) s++; ws = addDays(ws, -7);
+    for (let i = 0; i < 104; i++, ws = addDays(ws, -7)) { if (r.start && addDays(ws, 6) < r.start) break; if (weekDone(r, ws) >= n) s++; else break; }
+    return s;
+  }
+  let d = t, s = 0;
+  if (scheduled(r, d) && !isDone(r, d)) d = addDays(d, -1);
+  for (let i = 0; i < 730; i++, d = addDays(d, -1)) {
+    if (r.start && d < r.start) break;
+    if (!scheduled(r, d)) continue;
+    if (isDone(r, d)) s++; else break;
+  }
+  return s;
+}
+function rate(r, days = 30) {   // 최근 N일 달성률
+  const t = today(); let sch = 0, done = 0;
+  for (let i = 0; i < days; i++) { const d = addDays(t, -i); if (!activeOn(r, d)) continue; if (isWeekly(r)) sch += ((r.freq.n || 1) / 7); else if (scheduled(r, d)) sch++; else continue; if (isDone(r, d)) done++; }
+  return sch ? Math.min(1, done / sch) : null;
+}
+function dayStat(d) { let all = 0, done = 0; for (const r of routinesSorted()) { if (isWeekly(r) || !scheduled(r, d)) continue; all++; if (isDone(r, d)) done++; } return { all, done, p: all ? done / all : null }; }
+
+/* ====================== 목표 계산 ====================== */
+const goalsOf = (area, level, period, parent) => live('goals').filter(g => g.area === area && g.level === level && (period == null || String(g.period) === String(period)) && (parent === undefined || (g.parent || '') === (parent || ''))).sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || (a.upd || 0) - (b.upd || 0));
+const childGoals = g => live('goals').filter(x => x.parent === g.id);
+function goalProgress(g, depth = 0) {
+  const pm = g.pmode || 'auto';
+  if (g.status === '완료') return 1;
+  if (pm === 'manual') return clamp((+g.pct || 0) / 100);
+  if (pm === 'number') {
+    const cur = g.metric ? metricValue(g.metric) : (g.current === '' || g.current == null ? null : +g.current);
+    if (cur == null || g.target === '' || g.target == null) return null;
+    const st = +g.start || 0, tg = +g.target;
+    return tg === st ? (cur >= tg ? 1 : 0) : clamp((cur - st) / (tg - st));
+  }
+  const kids = depth < 5 ? childGoals(g) : [];
+  const ps = kids.map(k => goalProgress(k, depth + 1)).filter(p => p != null);
+  if (ps.length) return ps.reduce((a, b) => a + b, 0) / ps.length;
+  const ts = live('tasks').filter(t => t.goal === g.id);
+  if (ts.length) return ts.filter(t => t.done).length / ts.length;
+  return null;
+}
+function goalCurrent(g) { if ((g.pmode || 'auto') !== 'number') return ''; const cur = g.metric ? metricValue(g.metric) : g.current; return cur == null || cur === '' ? '' : `${won(cur)}${esc(g.unit || '')} / 목표 ${won(g.target)}${esc(g.unit || '')}`; }
+const ymOf = (y, m) => `${y}-${pad(m)}`;
+const periodLabel = g => g.level === 'month' ? `${+String(g.period).slice(5, 7)}월` : g.level === 'year' ? `${g.period}년` : (g.period || '');
+
+/* ====================== 홈: 가계부 · 목표·루틴 · 업무관리 한눈에 (모두 읽기만 함) ====================== */
+const WEB = location.protocol === 'https:';
+const APPS = {
+  ledger: { name: '가계부', icon: '💰', url: WEB ? 'https://seo-seung-jung.github.io/gagyebu/' : './가계부.html' },
+  goals: { name: '목표·루틴', icon: '🎯', url: WEB ? 'https://seo-seung-jung.github.io/goals/' : './목표관리.html' },
+  work: { name: '업무관리', icon: '💼', url: WEB ? 'https://seo-seung-jung.github.io/beonyoung/' : '../번영손해사정/번영손해사정_업무관리.html' }
+};
+const GOALS_PATH = '/개인문서/목표관리_데이터.json';
+let goalsSrc = '', loadedAt = null, loginNeeded = false, loadErr = '';
+
+async function readGraphJson(path) {
+  const r = await gfetch('/me/drive/root:' + path.split('/').map(encodeURIComponent).join('/'));
+  if (!r.ok) return null;
+  const j = await r.json(), c = await fetch(j['@microsoft.graph.downloadUrl'], { cache: 'no-store' });
+  return JSON.parse(await c.text());
+}
+async function loadGoals() {
+  let d = null, src = '';
+  if (store) { try { const x = await readGraphJson(GOALS_PATH); if (x && x.app === APP) { d = x; src = 'OneDrive'; } } catch (e) { } }
+  if (!d) { try { const x = JSON.parse(lsGet(K_DOC) || 'null'); if (x && x.app === APP) { d = x; src = '이 기기에서 연 목표·루틴'; } } catch (e) { } }
+  if (d) { doc = normalize(d); goalsSrc = src; }
+  rebuildIndex();
+  return !!d;
+}
+async function loadAll() {
+  await Promise.all([loadGoals(), loadLedger(true), loadWork(true)]);
+  rebuildIndex(); loadedAt = new Date(); render();
+}
+
+// ---- 가계부 계산 (가계부 프로그램과 같은 기준)
+const L = c => ledger ? (ledger[c] || []).filter(r => !r.del) : [];
+function ledgerMonth() {
+  if (!ledger) return null;
+  const ym = today().slice(0, 7), t = today(), bm = new Map(((ledger.meta || {}).categories || []).map(c => [c.name, c.block]));
+  let life = 0, total = 0, todaySum = 0, todayN = 0;
+  for (const x of L('tx')) {
+    if (!x.date) continue; const a = +x.amount || 0;
+    if (x.date.startsWith(ym)) { total += a; if ((bm.get(x.cat) || '변동') !== '특별') life += a; }
+    if (x.date === t) { todaySum += a; todayN++; }
+  }
+  const sav = L('savings').filter(s => s.ym === ym).reduce((a, s) => a + (+s.amount || 0), 0);
+  return { life, total, out: total + sav, budget: +((ledger.meta || {}).budget) || 0, todaySum, todayN };
+}
+function ledgerLiquidity() {
+  if (!ledger) return null;
+  let dep = 0, cash = 0, minus = 0, inv = 0, card = 0;
+  for (const r of L('assets')) {
+    const v = +r.amount || 0;
+    if (r.side === '부채') { const m = (r.memo || '').match(/한도\s*([\d,]+)/); if (m) minus += Math.max(0, num(m[1]) - v); if (r.group === '카드 미결제' && /금월/.test(r.name || '')) card += v; }
+    else if (r.group === '예금') dep += v; else if (r.group === '현금') cash += v; else if (r.group === '투자') inv += v;
+  }
+  return { liquid: dep + cash + minus, inv, card };
+}
+// ---- 업무관리 계산 (업무관리 대시보드와 같은 기준)
+function workUnpaid() { if (!work) return 0; let s = 0; for (const c of work.cases || []) for (const b of c.billings || []) if (!b.paidDate && wBillTotal(b)) s += b.fee || 0; return s; }
+function workPaidMonthInc() { if (!work) return 0; const ym = today().slice(0, 7); let s = 0; for (const c of work.cases || []) for (const b of c.billings || []) if (b.paidDate && b.paidDate.startsWith(ym)) s += wBillTotal(b); return s; }
+
+/* ---- 화면 ---- */
+const bar = (p, cls = '') => `<div class="pbar ${cls}"><i style="width:${p == null ? 0 : Math.min(100, p * 100).toFixed(1)}%"></i></div>`;
+const short = v => { const a = Math.abs(v); if (a >= 1e8) return (v / 1e8).toFixed(2).replace(/\.?0+$/, '') + '억'; if (a >= 1e4) return Math.round(v / 1e4).toLocaleString('ko-KR') + '만'; return won(v); };
+const openBtn = k => `<a class="open" href="${esc(APPS[k].url)}" target="_blank" rel="noopener">${APPS[k].icon} ${APPS[k].name} 열기 →</a>`;
+function render() {
+  const t = today(), d = pd(t), main = $('#main');
+  const tiles = Object.entries(APPS).map(([k, a]) => `<a class="tile" href="${esc(a.url)}" target="_blank" rel="noopener"><span class="ti">${a.icon}</span><b>${a.name}</b></a>`).join('');
+  if (loginNeeded) {
+    main.innerHTML = `<div class="hello"><h1>${d.getMonth() + 1}월 ${d.getDate()}일 (${DOW[d.getDay()]})</h1></div><div class="tiles">${tiles}</div>
+      <div class="card"><h2>Microsoft 계정으로 로그인해 주세요</h2><p class="help">가계부·목표·루틴과 같은 계정입니다. 세 프로그램의 OneDrive 데이터를 읽어서 한 화면에 모아 보여 줍니다(읽기만 하고 고치지 않음).${loadErr ? `<br><span class="neg">${esc(loadErr)}</span>` : ''}</p><button class="primary" data-act="login">Microsoft 계정으로 로그인</button></div>`;
+    return;
+  }
+  // 루틴
+  const st = dayStat(t), rs = routinesSorted().filter(r => isWeekly(r) ? activeOn(r, t) : scheduled(r, t));
+  const todo = rs.filter(r => !isDone(r, t)), done = rs.filter(r => isDone(r, t));
+  const routineCard = `<div class="card"><h2>✅ 오늘의 루틴 <small>${st.done}/${st.all} 완료</small></h2>${bar(st.p, st.p === 1 ? 'done' : '')}
+    ${rs.length ? `<div class="chips">${todo.map(r => `<span class="chip todo">${esc(r.icon || '')} ${esc(r.name)}${isWeekly(r) ? ` <small>주 ${weekDone(r, weekStart(t))}/${r.freq.n || 1}</small>` : ''}</span>`).join('')}${done.map(r => `<span class="chip ok">✓ ${esc(r.name)}</span>`).join('')}</div>` : '<p class="muted">목표·루틴 데이터를 아직 못 읽었습니다.</p>'}
+    ${openBtn('goals')}</div>`;
+  // 업무 할 일
+  const wi = workItemsOn(t), wn = wi.late.length + wi.on.length + wi.leads.length;
+  const wrow = ({ c, t: x }, cls) => `<div class="li ${cls}"><b>${esc(x.text || '다음 할 일 미입력')}</b><small>${esc(c.name)}${x.due ? ' · ' + (x.start && x.start !== x.due ? `${mlabel(x.start)}~${mlabel(x.due)}` : mlabel(x.due)) : ''}</small></div>`;
+  const workTodoCard = `<div class="card"><h2>💼 오늘 업무 <small>${work ? `기한 지남 ${wi.late.length} · 오늘·진행 중 ${wi.on.length} · 연락할 리드 ${wi.leads.length}` : '업무관리 데이터를 못 읽음'}</small></h2>
+    ${wi.late.map(x => wrow(x, 'late')).join('')}${wi.on.map(x => wrow(x, '')).join('')}${wi.leads.map(l => `<div class="li lead"><b>${esc(l.nextAction || '연락하기')}</b><small>영업 리드 · ${esc(l.name || '')} · ${mlabel(l.nextDate)}</small></div>`).join('')}
+    ${work && !wn ? '<p class="muted">오늘 처리할 업무 할 일이 없습니다.</p>' : ''}${openBtn('work')}</div>`;
+  // 가계
+  const lm = ledgerMonth(), lq = ledgerLiquidity(), m = d.getMonth() + 1;
+  const dim = new Date(d.getFullYear(), m, 0).getDate(), left = dim - d.getDate();
+  const moneyCard = `<div class="card"><h2>💰 ${m}월 살림 <small>가계부</small></h2>${lm ? `
+    <div class="big">${won(lm.life)}<span class="u"> / 예산 ${short(lm.budget)}</span></div>${bar(lm.budget ? lm.life / lm.budget : null, lm.life > lm.budget ? 'over' : '')}
+    <div class="kv"><span>남은 예산</span><b class="${lm.budget - lm.life < 0 ? 'neg' : ''}">${won(lm.budget - lm.life)}${lm.budget - lm.life > 0 && left ? ` <small>(하루 ${short((lm.budget - lm.life) / left)})</small>` : ''}</b></div>
+    <div class="kv"><span>오늘 지출</span><b>${won(lm.todaySum)} <small>${lm.todayN}건</small></b></div>
+    ${lq ? `<div class="kv"><span>가용 자금 (유동현금 − 금월 카드)</span><b class="${lq.liquid - lq.card < 0 ? 'neg' : 'pos'}">${won(lq.liquid - lq.card)}</b></div>` : ''}` : '<p class="muted">가계부 데이터를 아직 못 읽었습니다.</p>'}
+    ${openBtn('ledger')}</div>`;
+  // 사업
+  const bizCard = `<div class="card"><h2>📈 사업 현황 <small>${d.getFullYear()}년 · 업무관리</small></h2>${work ? `
+    <div class="kv"><span>올해 수임</span><b>${workMetric('wCountYear')}건 · ${short(workMetric('wFeeYear'))}</b></div>
+    <div class="kv"><span>올해 입금 (수수료)</span><b>${short(workMetric('wPaidYear'))}</b></div>
+    <div class="kv"><span>${m}월 입금 (수수료)</span><b>${short(workMetric('wPaidMonth'))}</b></div>
+    <div class="kv"><span>수금 예정 (미입금)</span><b>${short(workUnpaid())}</b></div>
+    <div class="kv"><span>미결 사건</span><b>${workMetric('wOpen')}건</b></div>` : '<p class="muted">업무관리 데이터를 아직 못 읽었습니다.</p>'}
+    ${openBtn('work')}</div>`;
+  // 현금흐름 (이번 달)
+  const incM = workPaidMonthInc(), cf = lm ? incM - lm.out : null;
+  const cashCard = `<div class="card"><h2>🔄 ${m}월 현금흐름 <small>사업 입금 − (지출 + 저축·투자)</small></h2>${lm && work ? `
+    <div class="kv"><span>사업 입금 (VAT 포함)</span><b class="pos">${won(incM)}</b></div>
+    <div class="kv"><span>총 현금유출</span><b>${won(lm.out)}</b></div>
+    <div class="kv total"><span>차액</span><b class="${cf >= 0 ? 'pos' : 'neg'}">${cf >= 0 ? '+' : ''}${won(cf)}</b></div>` : '<p class="muted">가계부와 업무관리 데이터를 모두 읽어야 보입니다.</p>'}
+    ${openBtn('ledger')}</div>`;
+  // 목표
+  const ym = t.slice(0, 7), mg = live('goals').filter(g => g.level === 'month' && g.period === ym && g.status !== '보류');
+  const yg = live('goals').filter(g => g.level === 'year' && String(g.period) === t.slice(0, 4) && g.status !== '보류');
+  const gline = g => { const p = goalProgress(g); return `<div class="gmini"><span>${esc(areaOf(g.area).icon)} ${esc(g.title)}</span>${bar(p, g.status === '완료' ? 'done' : '')}<b>${p == null ? '-' : Math.round(p * 100) + '%'}</b></div>`; };
+  const goalCard = `<div class="card"><h2>🎯 목표 <small>${m}월 ${mg.length}개 · 올해 ${yg.length}개</small></h2>
+    ${mg.length ? `<div class="sub">${m}월 목표</div>${mg.map(gline).join('')}` : ''}${yg.length ? `<div class="sub">${d.getFullYear()}년 목표</div>${yg.map(gline).join('')}` : ''}
+    ${!mg.length && !yg.length ? '<p class="muted">아직 목표가 없습니다. 목표·루틴의 「목표」에서 추가하세요.</p>' : ''}${openBtn('goals')}</div>`;
+  const src = [goalsSrc && `목표·루틴: ${goalsSrc}`, ledgerSrc && `가계부: ${ledgerSrc}`, workSrc && `업무관리: ${workSrc}`].filter(Boolean).join(' · ');
+  main.innerHTML = `<div class="hello"><h1>${d.getMonth() + 1}월 ${d.getDate()}일 (${DOW[d.getDay()]})</h1><span class="muted">${loadedAt ? `${loadedAt.toTimeString().slice(0, 5)} 기준` : ''} <button class="link" data-act="reload">새로고침</button></span></div>
+    <div class="tiles">${tiles}</div>
+    <div class="grid3">${routineCard}${workTodoCard}${moneyCard}${goalCard}${bizCard}${cashCard}</div>
+    <p class="help">홈은 세 프로그램의 데이터를 읽어서 보여 주기만 합니다. 체크·입력은 각 프로그램에서 하세요.${src ? '<br>읽은 곳 — ' + esc(src) : ''}${!WEB ? '<br>PC에서는 각 프로그램을 이 PC에서 마지막으로 연 내용 기준입니다.' : ''}</p>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  if (b.dataset.act === 'login') msToken(true).catch(x => { loadErr = x.message; render(); });
+  if (b.dataset.act === 'reload') loadAll();
+});
+(async function init() {
+  render();
+  if (WEB && msOK()) {
+    try { await msInit(); if (msAccount) { store = { kind: 'ms' }; } else { loginNeeded = true; render(); return; } }
+    catch (e) { loadErr = e.message; loginNeeded = true; render(); return; }
+  }
+  await loadAll();
+  setInterval(() => { if (!document.hidden) loadAll(); }, 5 * 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && loadedAt && Date.now() - loadedAt > 60000) loadAll(); });
+})();
+</script>
+</body>
+</html>

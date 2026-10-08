@@ -284,7 +284,7 @@ a.open{color:var(--accent-2);text-decoration:none;font-size:13px;font-weight:600
   <div class="bar">
     <div class="brand">홈</div>
     <div class="spacer"></div>
-    <span class="pill" id="status">가계부 · 목표·루틴 · 업무관리</span>
+    <span class="pill" id="status">목표·루틴 · 업무관리 · 가계부</span>
   </div>
 </header>
 <main id="main" class="home"></main>
@@ -684,10 +684,10 @@ const periodLabel = g => g.level === 'month' ? `${+String(g.period).slice(5, 7)}
 
 /* ====================== 홈: 가계부 · 목표·루틴 · 업무관리 한눈에 (모두 읽기만 함) ====================== */
 const WEB = location.protocol === 'https:';
-const APPS = {
-  ledger: { name: '가계부', icon: '💰', url: WEB ? 'https://seo-seung-jung.github.io/gagyebu/' : './가계부.html' },
+const APPS = {   // 이 순서대로 맨 위 버튼이 놓임 (사용자 요청 2026-10-08: 목표·루틴 → 업무관리 → 가계부)
   goals: { name: '목표·루틴', icon: '🎯', url: WEB ? 'https://seo-seung-jung.github.io/goals/' : './목표관리.html' },
-  work: { name: '업무관리', icon: '💼', url: WEB ? 'https://seo-seung-jung.github.io/beonyoung/' : '../번영손해사정/번영손해사정_업무관리.html' }
+  work: { name: '업무관리', icon: '💼', url: WEB ? 'https://seo-seung-jung.github.io/beonyoung/' : '../번영손해사정/번영손해사정_업무관리.html' },
+  ledger: { name: '가계부', icon: '💰', url: WEB ? 'https://seo-seung-jung.github.io/gagyebu/' : './가계부.html' }
 };
 const GOALS_PATH = '/개인문서/목표관리_데이터.json';
 let goalsSrc = '', loadedAt = null, loginNeeded = false, loadErr = '';

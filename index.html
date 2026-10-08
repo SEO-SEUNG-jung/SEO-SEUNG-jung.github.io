@@ -805,11 +805,10 @@ function render() {
     ${openBtn('ledger')}</div>`;
   // 목표
   const ym = t.slice(0, 7), mg = live('goals').filter(g => g.level === 'month' && g.period === ym && g.status !== '보류');
-  const yg = live('goals').filter(g => g.level === 'year' && String(g.period) === t.slice(0, 4) && g.status !== '보류');
   const gline = g => { const p = goalProgress(g); return `<div class="gmini"><span>${esc(areaOf(g.area).icon)} ${esc(g.title)}</span>${g.pmode === 'none' ? '' : `${bar(p, g.status === '완료' ? 'done' : '')}<b>${p == null ? '-' : Math.round(p * 100) + '%'}</b>`}</div>`; }; // 진행률 표시 안 함 목표는 이름만
-  const goalCard = `<div class="card"><h2>🎯 목표 <small>${m}월 ${mg.length}개 · 올해 ${yg.length}개</small></h2>
-    ${mg.length ? `<div class="sub">${m}월 목표</div>${mg.map(gline).join('')}` : ''}${yg.length ? `<div class="sub">${d.getFullYear()}년 목표</div>${yg.map(gline).join('')}` : ''}
-    ${!mg.length && !yg.length ? '<p class="muted">아직 목표가 없습니다. 목표·루틴의 「목표」에서 추가하세요.</p>' : ''}${openBtn('goals')}</div>`;
+  const goalCard = `<div class="card"><h2>🎯 목표 <small>${m}월 ${mg.length}개</small></h2>
+    ${mg.length ? `<div class="sub">${m}월 목표</div>${mg.map(gline).join("")}` : ""}
+    ${!mg.length ? '<p class="muted">이번 달 목표가 없습니다. 목표·루틴의 「목표」에서 추가하세요.</p>' : ''}${openBtn('goals')}</div>`;
   const src = [goalsSrc && `목표·루틴: ${goalsSrc}`, ledgerSrc && `가계부: ${ledgerSrc}`, workSrc && `업무관리: ${workSrc}`].filter(Boolean).join(' · ');
   main.innerHTML = `<div class="hello"><h1>${d.getMonth() + 1}월 ${d.getDate()}일 (${DOW[d.getDay()]})</h1><span class="muted">${loadedAt ? `${loadedAt.toTimeString().slice(0, 5)} 기준` : ''} <button class="link" data-act="reload">새로고침</button></span></div>
     <div class="tiles">${tiles}</div>

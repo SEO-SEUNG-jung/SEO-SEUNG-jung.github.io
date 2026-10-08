@@ -779,7 +779,7 @@ function render() {
   const bizCard = `<div class="card"><h2>📈 사업 현황 <small>${d.getFullYear()}년 · 업무관리</small></h2>${work ? `
     <div class="kv"><span>올해 수임 (VAT 포함)</span><b>${workMetric('wCountYear')}건 · ${short(workFeeYearInc())}</b></div>
     <div class="kv"><span>올해 입금 (VAT 포함)</span><b>${short(workPaidYearInc())}</b></div>
-    <div class="kv"><span>${m}월 입금 (수수료)</span><b>${short(workMetric('wPaidMonth'))}</b></div>
+    <div class="kv"><span>${m}월 입금 (VAT 포함)</span><b>${short(workPaidMonthInc())}</b></div>
     <div class="kv"><span>수금 예정 (미입금, VAT 포함)</span><b>${short(workUnpaid())}</b></div>
     <div class="kv"><span>미결 사건</span><b>${workMetric('wOpen')}건</b></div>` : '<p class="muted">업무관리 데이터를 아직 못 읽었습니다.</p>'}
     ${openBtn('work')}</div>`;

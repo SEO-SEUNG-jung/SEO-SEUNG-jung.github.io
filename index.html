@@ -736,7 +736,10 @@ function ledgerLiquidity() {
   return { liquid: dep + cash + minus, inv, card };
 }
 // ---- 업무관리 계산 (업무관리 대시보드와 같은 기준)
-function workUnpaid() { if (!work) return 0; let s = 0; for (const c of work.cases || []) for (const b of c.billings || []) if (!b.paidDate && wBillTotal(b)) s += b.fee || 0; return s; }
+// 부가세 포함 금액(수수료+부가세+기타) — 업무관리 대시보드의 「VAT 포함」과 같은 기준 (사용자 요청 2026-10-08)
+function workUnpaid() { if (!work) return 0; let s = 0; for (const c of work.cases || []) for (const b of c.billings || []) if (!b.paidDate && wBillTotal(b)) s += wBillTotal(b); return s; }
+function workFeeYearInc() { if (!work) return 0; const Y = new Date().getFullYear(); let s = 0; for (const c of work.cases || []) if (wCaseYear(c) === Y) for (const b of c.billings || []) s += wBillTotal(b); return s; }
+function workPaidYearInc() { if (!work) return 0; const Y = String(new Date().getFullYear()); let s = 0; for (const c of work.cases || []) for (const b of c.billings || []) if (b.paidDate && b.paidDate.startsWith(Y)) s += wBillTotal(b); return s; }
 function workPaidMonthInc() { if (!work) return 0; const ym = today().slice(0, 7); let s = 0; for (const c of work.cases || []) for (const b of c.billings || []) if (b.paidDate && b.paidDate.startsWith(ym)) s += wBillTotal(b); return s; }
 
 /* ---- 화면 ---- */
@@ -774,10 +777,10 @@ function render() {
     ${openBtn('ledger')}</div>`;
   // 사업
   const bizCard = `<div class="card"><h2>📈 사업 현황 <small>${d.getFullYear()}년 · 업무관리</small></h2>${work ? `
-    <div class="kv"><span>올해 수임</span><b>${workMetric('wCountYear')}건 · ${short(workMetric('wFeeYear'))}</b></div>
-    <div class="kv"><span>올해 입금 (수수료)</span><b>${short(workMetric('wPaidYear'))}</b></div>
+    <div class="kv"><span>올해 수임 (VAT 포함)</span><b>${workMetric('wCountYear')}건 · ${short(workFeeYearInc())}</b></div>
+    <div class="kv"><span>올해 입금 (VAT 포함)</span><b>${short(workPaidYearInc())}</b></div>
     <div class="kv"><span>${m}월 입금 (수수료)</span><b>${short(workMetric('wPaidMonth'))}</b></div>
-    <div class="kv"><span>수금 예정 (미입금)</span><b>${short(workUnpaid())}</b></div>
+    <div class="kv"><span>수금 예정 (미입금, VAT 포함)</span><b>${short(workUnpaid())}</b></div>
     <div class="kv"><span>미결 사건</span><b>${workMetric('wOpen')}건</b></div>` : '<p class="muted">업무관리 데이터를 아직 못 읽었습니다.</p>'}
     ${openBtn('work')}</div>`;
   // 현금흐름 (이번 달)

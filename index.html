@@ -294,6 +294,7 @@ a.open{color:var(--accent-2);text-decoration:none;font-size:13px;font-weight:600
 .cal-i{font-size:11.5px;line-height:1.4;padding:1px 4px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-i.todo{background:color-mix(in srgb,var(--pos) 15%,transparent)}
 .cal-i.work{background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.cal-i.lead{background:color-mix(in srgb,var(--c3) 22%,transparent)}
 .cal-i.done{text-decoration:line-through;opacity:.55}
 .cal-i.late{background:color-mix(in srgb,var(--neg) 16%,transparent);color:var(--neg)}
 .cal-more{font-size:11px;color:var(--muted)}
@@ -793,11 +794,13 @@ function calItems(d) { // 그날 보여 줄 것: To-do(그날 날짜), 미결 �
       else if ((per || !x.due) && x.start === d) items.push({ k: 'work', text, sub: c.name, tag: '시작' });
     }
   }
+  // 영업 리드 다음 연락일 (진행 중 리드만, 2026-10-26 사용자 요청)
+  if (work) for (const l of work.leads || []) if (LEAD_OPEN.includes(l.stage) && l.nextDate === d) items.push({ k: 'lead', text: l.nextAction || '연락하기', sub: l.name || '', late: d < t });
   return items;
 }
 function calCard() {
   const [y, m] = calYM.split('-').map(Number), start = new Date(y, m - 1, 1).getDay(), days = new Date(y, m, 0).getDate(), t = today();
-  const label = x => `${x.k === 'todo' ? (x.done ? '✓ ' : '') : '💼 '}${x.tag ? '[' + x.tag + '] ' : ''}${x.text}`;
+  const label = x => `${x.k === 'todo' ? (x.done ? '✓ ' : '') : x.k === 'lead' ? '📞 ' : '💼 '}${x.tag ? '[' + x.tag + '] ' : ''}${x.text}`;
   let cells = '<div class="cal-d out"></div>'.repeat(start);
   for (let n = 1; n <= days; n++) {
     const d = `${y}-${String(m).padStart(2, '0')}-${String(n).padStart(2, '0')}`, it = calItems(d), w = (start + n - 1) % 7;
@@ -805,8 +808,8 @@ function calCard() {
   }
   cells += '<div class="cal-d out"></div>'.repeat((7 - (start + days) % 7) % 7);
   const sd = pd(calSel), si = calItems(calSel);
-  const row = x => `<div class="li ${x.late ? 'late' : ''}${x.done ? ' done' : ''}"><b>${esc(label(x))}</b><small>${x.k === 'todo' ? 'To-do · 목표·루틴' : '업무 · ' + esc(x.sub || '')}</small></div>`;
-  return `<div class="card cal-card"><h2>📅 달력 <small><span class="cal-key" style="background:color-mix(in srgb,var(--pos) 35%,transparent)"></span>To-do(목표·루틴)<span class="cal-key" style="background:color-mix(in srgb,var(--accent) 35%,transparent)"></span>업무 할 일 기한(업무관리)<span class="cal-key" style="background:color-mix(in srgb,var(--neg) 35%,transparent)"></span>지난 것(안 끝남)</small></h2>
+  const row = x => `<div class="li ${x.late ? 'late' : ''}${x.done ? ' done' : ''}"><b>${esc(label(x))}</b><small>${x.k === 'todo' ? 'To-do · 목표·루틴' : (x.k === 'lead' ? '영업 리드 · ' : '업무 · ') + esc(x.sub || '')}</small></div>`;
+  return `<div class="card cal-card"><h2>📅 달력 <small><span class="cal-key" style="background:color-mix(in srgb,var(--pos) 35%,transparent)"></span>To-do(목표·루틴)<span class="cal-key" style="background:color-mix(in srgb,var(--accent) 35%,transparent)"></span>업무 할 일 기한(업무관리)<span class="cal-key" style="background:color-mix(in srgb,var(--c3) 45%,transparent)"></span>영업 리드 연락일<span class="cal-key" style="background:color-mix(in srgb,var(--neg) 35%,transparent)"></span>지난 것(안 끝남)</small></h2>
     <div class="cal-nav"><button data-act="calPrev" aria-label="이전 달">◀</button><b>${y}년 ${m}월</b><button data-act="calNext" aria-label="다음 달">▶</button><button class="link" data-act="calToday">오늘</button></div>
     <div class="cal-g">${[...DOW].map((x, i) => `<div class="cal-h${i === 0 ? ' sun' : i === 6 ? ' sat' : ''}">${x}</div>`).join('')}${cells}</div>
     <div class="cal-sel"><div class="sub">${sd.getMonth() + 1}월 ${sd.getDate()}일 (${DOW[sd.getDay()]}) · ${si.length}건</div>${si.map(row).join('') || '<p class="muted">이날 일정이 없습니다.</p>'}</div></div>`;

@@ -277,6 +277,30 @@ a.open{color:var(--accent-2);text-decoration:none;font-size:13px;font-weight:600
 .gmini span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sub{font-size:12px;font-weight:700;color:var(--muted);margin:6px 0 2px}
 @media (max-width:1000px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* 달력 (2026-10-26) */
+.cal-card{margin-top:16px}
+.cal-nav{display:flex;align-items:center;gap:8px;margin:2px 0 10px;flex-wrap:wrap}
+.cal-nav b{font-size:16px;min-width:110px;text-align:center}
+.cal-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal-h{text-align:center;font-size:12px;color:var(--muted);padding:2px 0}
+.cal-h.sun{color:var(--neg)}.cal-h.sat{color:var(--accent)}
+.cal-d{min-height:96px;border:1px solid var(--line);border-radius:8px;padding:4px 5px;display:flex;flex-direction:column;gap:2px;cursor:pointer;overflow:hidden;background:var(--panel);min-width:0}
+.cal-d:hover{border-color:var(--accent)}
+.cal-d.out{background:transparent;border-color:transparent;cursor:default}
+.cal-d.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.cal-d.sel{background:var(--accent-soft)}
+.cal-n{font-size:12px;font-weight:700}
+.cal-d.sun .cal-n{color:var(--neg)}.cal-d.sat .cal-n{color:var(--accent)}
+.cal-i{font-size:11.5px;line-height:1.4;padding:1px 4px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-i.todo{background:color-mix(in srgb,var(--pos) 15%,transparent)}
+.cal-i.work{background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.cal-i.done{text-decoration:line-through;opacity:.55}
+.cal-i.late{background:color-mix(in srgb,var(--neg) 16%,transparent);color:var(--neg)}
+.cal-more{font-size:11px;color:var(--muted)}
+.cal-sel{margin-top:12px}
+.cal-sel .li.done b{text-decoration:line-through;opacity:.6}
+.cal-key{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin:0 3px 0 8px}
+@media (max-width:640px){.cal-g{gap:2px}.cal-d{min-height:54px;padding:3px;gap:2px}.cal-i{font-size:0;height:6px;padding:0;border-radius:3px}.cal-more{font-size:10px}}
 @media (max-width:640px){.grid3{grid-template-columns:1fr}.tiles{gap:8px}.tile{flex-direction:column;gap:4px;padding:10px 6px;font-size:13px;text-align:center}.tile .ti{font-size:24px}.hello h1{font-size:19px}}
 </style>
 </head>
@@ -756,6 +780,38 @@ function workFeeYearInc() { if (!work) return 0; const Y = new Date().getFullYea
 function workPaidYearInc() { if (!work) return 0; const Y = String(new Date().getFullYear()); let s = 0; for (const c of work.cases || []) for (const b of c.billings || []) if (b.paidDate && b.paidDate.startsWith(Y)) s += wBillTotal(b); return s; }
 function workPaidMonthInc() { if (!work) return 0; const ym = today().slice(0, 7); let s = 0; for (const c of work.cases || []) for (const b of c.billings || []) if (b.paidDate && b.paidDate.startsWith(ym)) s += wBillTotal(b); return s; }
 
+/* ---- 달력: 목표·루틴 To-do + 업무관리 할 일 기한 (2026-10-26 사용자 요청) ---- */
+let calYM = today().slice(0, 7), calSel = today();
+function calItems(d) { // 그날 보여 줄 것: To-do(그날 날짜), 미결 사건 할 일(마감일, 기간 할 일은 시작일·마감일)
+  const items = [], t = today();
+  for (const x of live('todos')) if (x.date === d) items.push({ k: 'todo', done: !!x.done, late: !x.done && d < t, text: x.title || '' });
+  if (work) for (const c of work.cases || []) {
+    if (c.stage === WORK_DONE) continue;
+    for (const x of wTodos(c)) {
+      const per = x.start && x.due && x.start !== x.due, text = x.text || '다음 할 일 미입력';
+      if (x.due === d) items.push({ k: 'work', text, sub: c.name, tag: per ? '마감' : '', late: d < t });
+      else if ((per || !x.due) && x.start === d) items.push({ k: 'work', text, sub: c.name, tag: '시작' });
+    }
+  }
+  return items;
+}
+function calCard() {
+  const [y, m] = calYM.split('-').map(Number), start = new Date(y, m - 1, 1).getDay(), days = new Date(y, m, 0).getDate(), t = today();
+  const label = x => `${x.k === 'todo' ? (x.done ? '✓ ' : '') : '💼 '}${x.tag ? '[' + x.tag + '] ' : ''}${x.text}`;
+  let cells = '<div class="cal-d out"></div>'.repeat(start);
+  for (let n = 1; n <= days; n++) {
+    const d = `${y}-${String(m).padStart(2, '0')}-${String(n).padStart(2, '0')}`, it = calItems(d), w = (start + n - 1) % 7;
+    cells += `<div class="cal-d${d === t ? ' today' : ''}${d === calSel ? ' sel' : ''}${w === 0 ? ' sun' : w === 6 ? ' sat' : ''}" data-act="calDay" data-d="${d}"><span class="cal-n">${n}</span>${it.slice(0, 4).map(x => `<span class="cal-i ${x.k}${x.done ? ' done' : ''}${x.late ? ' late' : ''}" title="${esc(label(x) + (x.sub ? ' · ' + x.sub : ''))}">${esc(label(x))}</span>`).join('')}${it.length > 4 ? `<span class="cal-more">+${it.length - 4}개</span>` : ''}</div>`;
+  }
+  cells += '<div class="cal-d out"></div>'.repeat((7 - (start + days) % 7) % 7);
+  const sd = pd(calSel), si = calItems(calSel);
+  const row = x => `<div class="li ${x.late ? 'late' : ''}${x.done ? ' done' : ''}"><b>${esc(label(x))}</b><small>${x.k === 'todo' ? 'To-do · 목표·루틴' : '업무 · ' + esc(x.sub || '')}</small></div>`;
+  return `<div class="card cal-card"><h2>📅 달력 <small><span class="cal-key" style="background:color-mix(in srgb,var(--pos) 35%,transparent)"></span>To-do(목표·루틴)<span class="cal-key" style="background:color-mix(in srgb,var(--accent) 35%,transparent)"></span>업무 할 일 기한(업무관리)<span class="cal-key" style="background:color-mix(in srgb,var(--neg) 35%,transparent)"></span>지난 것(안 끝남)</small></h2>
+    <div class="cal-nav"><button data-act="calPrev" aria-label="이전 달">◀</button><b>${y}년 ${m}월</b><button data-act="calNext" aria-label="다음 달">▶</button><button class="link" data-act="calToday">오늘</button></div>
+    <div class="cal-g">${[...DOW].map((x, i) => `<div class="cal-h${i === 0 ? ' sun' : i === 6 ? ' sat' : ''}">${x}</div>`).join('')}${cells}</div>
+    <div class="cal-sel"><div class="sub">${sd.getMonth() + 1}월 ${sd.getDate()}일 (${DOW[sd.getDay()]}) · ${si.length}건</div>${si.map(row).join('') || '<p class="muted">이날 일정이 없습니다.</p>'}</div></div>`;
+}
+
 /* ---- 화면 ---- */
 const bar = (p, cls = '') => `<div class="pbar ${cls}"><i style="width:${p == null ? 0 : Math.min(100, p * 100).toFixed(1)}%"></i></div>`;
 const short = v => { const a = Math.abs(v); if (a >= 1e8) return (v / 1e8).toFixed(2).replace(/\.?0+$/, '') + '억'; if (a >= 1e4) return Math.round(v / 1e4).toLocaleString('ko-KR') + '만'; return won(v); };
@@ -814,12 +870,16 @@ function render() {
   main.innerHTML = `<div class="hello"><h1>${d.getMonth() + 1}월 ${d.getDate()}일 (${DOW[d.getDay()]})</h1><span class="muted">${loadedAt ? `${loadedAt.toTimeString().slice(0, 5)} 기준` : ''} <button class="link" data-act="reload">새로고침</button></span></div>
     <div class="tiles">${tiles}</div>
     <div class="grid3">${routineCard}${workTodoCard}${moneyCard}${goalCard}${bizCard}${cashCard}</div>
+    ${calCard()}
     <p class="help">홈은 세 프로그램의 데이터를 읽어서 보여 주기만 합니다. 체크·입력은 각 프로그램에서 하세요.${src ? '<br>읽은 곳 — ' + esc(src) : ''}${!WEB ? '<br>PC에서는 각 프로그램을 이 PC에서 마지막으로 연 내용 기준입니다.' : ''}</p>`;
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   if (b.dataset.act === 'login') msToken(true).catch(x => { loadErr = x.message; render(); });
   if (b.dataset.act === 'reload') loadAll();
+  if (b.dataset.act === 'calDay') { calSel = b.dataset.d; render(); }
+  if (b.dataset.act === 'calPrev' || b.dataset.act === 'calNext') { const [y, m] = calYM.split('-').map(Number), dt = new Date(y, m - 1 + (b.dataset.act === 'calNext' ? 1 : -1), 1); calYM = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`; render(); }
+  if (b.dataset.act === 'calToday') { calYM = today().slice(0, 7); calSel = today(); render(); }
 });
 (async function init() {
   render();

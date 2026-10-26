@@ -794,8 +794,8 @@ function calItems(d) { // 그날 보여 줄 것: To-do(그날 날짜), 미결 �
       else if ((per || !x.due) && x.start === d) items.push({ k: 'work', text, sub: c.name, tag: '시작' });
     }
   }
-  // 영업 리드 다음 연락일 (진행 중 리드만, 2026-10-26 사용자 요청)
-  if (work) for (const l of work.leads || []) if (LEAD_OPEN.includes(l.stage) && l.nextDate === d) items.push({ k: 'lead', text: l.nextAction || '연락하기', sub: l.name || '', late: d < t });
+  // 영업 리드 다음 연락일 (수임 실패만 빼고 — 수임 성공이어도 계약 일정이 남을 수 있음, 2026-10-26 사용자 요청)
+  if (work) for (const l of work.leads || []) if (l.stage !== '수임 실패' && l.nextDate === d) items.push({ k: 'lead', text: l.nextAction || '연락하기', sub: l.name || '', late: d < t });
   return items;
 }
 function calCard() {

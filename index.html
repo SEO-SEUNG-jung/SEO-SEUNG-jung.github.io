@@ -605,7 +605,7 @@ function ledgerMetric(key) {
    업무관리 데이터 파일은 읽기만 하고 절대 쓰지 않음. 숫자는 업무관리 대시보드와 같은 기준으로 계산 */
 const K_WPATH = 'mokpyo.workPath', WORK_DEFAULT = '/번영손해사정/번영손해사정_데이터.json';
 const WORK_URL_WEB = 'https://seo-seung-jung.github.io/beonyoung/', WORK_URL_FILE = '../번영손해사정/번영손해사정_업무관리.html';
-const WORK_DONE = '종결(수수료 입금)', LEAD_OPEN = ['사고 인지', '상담 진행', '보류'];
+const WORK_DONE = '종결(수수료 입금)'; // 영업 리드는 수임 실패만 빼고 다음 연락일을 보여 줌(2026-10-26)
 let work = null, workAt = 0, workSrc = '';
 const workUrl = hash => (location.protocol === 'https:' ? WORK_URL_WEB : WORK_URL_FILE) + (hash || '');
 async function loadWork(force) {
@@ -658,7 +658,7 @@ function workItemsOn(d) {
     }
   }
   const byDue = (a, b) => String(a.t.due || '').localeCompare(String(b.t.due || ''));
-  const leads = (work.leads || []).filter(l => LEAD_OPEN.includes(l.stage) && l.nextDate && (isT ? l.nextDate <= d : l.nextDate === d)).sort((a, b) => a.nextDate.localeCompare(b.nextDate));
+  const leads = (work.leads || []).filter(l => l.stage !== '수임 실패' && l.nextDate && (isT ? l.nextDate <= d : l.nextDate === d)).sort((a, b) => a.nextDate.localeCompare(b.nextDate));
   return { late: late.sort(byDue), on: on.sort(byDue), leads };
 }
 

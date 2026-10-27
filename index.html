@@ -796,11 +796,14 @@ function calItems(d) { // 그날 보여 줄 것: To-do(그날 날짜), 미결 �
   }
   // 영업 리드 다음 연락일 (수임 실패만 빼고 — 수임 성공이어도 계약 일정이 남을 수 있음, 2026-10-26 사용자 요청)
   if (work) for (const l of work.leads || []) if (l.stage !== '수임 실패' && l.nextDate === d) items.push({ k: 'lead', text: l.nextAction || '연락하기', sub: l.name || '', late: d < t });
-  return items;
+  // 완료한 업무·리드 액션: 업무관리는 완료하면 할 일 목록에서 빼고 진행일지(logs)에 「✓ 완료: …」로 남기므로, 그 기록 날짜에 줄 그어 표시 (2026-10-27 사용자 요청, 종결 사건 포함)
+  const doneOf = (logs, k, sub) => { for (const g of logs || []) if (g && g.date === d && /^✓\s*완료:\s*/.test(g.text || '')) items.push({ k, done: true, text: g.text.replace(/^✓\s*완료:\s*/, ''), sub }); };
+  if (work) { for (const c of work.cases || []) doneOf(c.logs, 'work', c.name); for (const l of work.leads || []) doneOf(l.logs, 'lead', l.name || ''); }
+  return items.sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0)); // 안 끝난 것 먼저
 }
 function calCard() {
   const [y, m] = calYM.split('-').map(Number), start = new Date(y, m - 1, 1).getDay(), days = new Date(y, m, 0).getDate(), t = today();
-  const label = x => `${x.k === 'todo' ? (x.done ? '✓ ' : '') : x.k === 'lead' ? '📞 ' : '💼 '}${x.tag ? '[' + x.tag + '] ' : ''}${x.text}`;
+  const label = x => `${x.done ? '✓ ' : ''}${x.k === 'lead' ? '📞 ' : x.k === 'work' ? '💼 ' : ''}${x.tag ? '[' + x.tag + '] ' : ''}${x.text}`;
   let cells = '<div class="cal-d out"></div>'.repeat(start);
   for (let n = 1; n <= days; n++) {
     const d = `${y}-${String(m).padStart(2, '0')}-${String(n).padStart(2, '0')}`, it = calItems(d), w = (start + n - 1) % 7;
